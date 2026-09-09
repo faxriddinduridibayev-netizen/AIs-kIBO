@@ -154,6 +154,23 @@
         const syncBtn = document.getElementById("sync-btn");
         const syncStatus = document.getElementById("sync-status");
 
+        // Xavfsiz xatolik o'qish yordamchisi (JSON bo'lmasa HTML/Text matnini oladi)
+        async function handleResponseError(response) {
+            let errorMsg = `Server Xatosi (${response.status})`;
+            try {
+                const text = await response.text();
+                try {
+                    const json = JSON.parse(text);
+                    errorMsg = json.detail || json.message || errorMsg;
+                } catch {
+                    errorMsg = text.length > 150 ? text.substring(0, 150) + "..." : text;
+                }
+            } catch (e) {
+                errorMsg = "Server bilan bog'lanishda xatolik.";
+            }
+            return errorMsg;
+        }
+
         // Ishga tushganda tokenni tekshirish
         document.addEventListener("DOMContentLoaded", () => {
             const token = localStorage.getItem("access_token");
@@ -185,12 +202,12 @@
                     body: formData.toString()
                 });
 
-                const data = await response.json();
-
                 if (!response.ok) {
-                    throw new Error(data.detail || "Login yoki parol noto'g'ri!");
+                    const errDetail = await handleResponseError(response);
+                    throw new Error(errDetail);
                 }
 
+                const data = await response.json();
                 localStorage.setItem("access_token", data.access_token);
                 localStorage.setItem("username", username);
 
@@ -235,16 +252,17 @@
                     headers: { "Authorization": `Bearer ${token}` }
                 });
 
-                const data = await response.json();
-
                 if (!response.ok) {
                     if (response.status === 401) {
                         alert("Token muddati o'tgan. Iltimos qayta kiring.");
                         logoutBtn.click();
                         return;
                     }
-                    throw new Error(data.detail || "Qidiruvda xatolik.");
+                    const errDetail = await handleResponseError(response);
+                    throw new Error(errDetail);
                 }
+
+                const data = await response.json();
 
                 if (!data.results || data.results.length === 0) {
                     resultsContainer.innerHTML = '<p class="text-slate-500 text-center py-6">Mos keluvchi hujjatlar topilmadi.</p>';
@@ -298,17 +316,17 @@
                     }
                 });
 
-                const data = await response.json();
-
                 if (!response.ok) {
                     if (response.status === 401) {
                         alert("Sessiya muddati tugagan! Qayta kiring.");
                         logoutBtn.click();
                         return;
                     }
-                    throw new Error(data.detail || "Sinxronizatsiya xatosi.");
+                    const errDetail = await handleResponseError(response);
+                    throw new Error(errDetail);
                 }
 
+                const data = await response.json();
                 syncStatus.innerText = "✅ " + (data.message || "Indekslash boshlandi!");
                 syncStatus.className = "mt-3 text-xs text-emerald-600 font-semibold";
             } catch (err) {
