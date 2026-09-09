@@ -1,6 +1,14 @@
 fastapi
 uvicorn
-jinja2
-dropbox
 google-generativeai
+dropbox
 psycopg2-binary
+pgvector
+pypdf
+python-docx
+pandas
+openpyxl
+xlrd
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
