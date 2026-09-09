@@ -3,492 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buxgalteriya Hujjatlarini Qidirish Tizimi</title>
+    <title>Buxgalteriya Tizimi va AI Assistent</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Font for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --text: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --radius: 10px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-        }
-
-        /* Card Styles */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 32px;
-            margin-bottom: 20px;
-        }
-
-        /* Auth Screen */
-        #auth-screen {
-            max-width: 420px;
-            margin: 0 auto;
-        }
-
-        .auth-title {
-            font-size: 24px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-
-        .auth-subtitle {
-            font-size: 14px;
-            color: var(--text-muted);
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text);
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 14px;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        button:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-sync {
-            background-color: #059669;
-            width: auto;
-            padding: 10px 18px;
-            font-size: 14px;
-        }
-
-        .btn-sync:hover {
-            background-color: #047857;
-        }
-
-        .btn-logout {
-            background-color: transparent;
-            color: #ef4444;
-            border: 1px solid #fca5a5;
-            width: auto;
-            padding: 8px 14px;
-            font-size: 13px;
-        }
-
-        .btn-logout:hover {
-            background-color: #fef2f2;
-        }
-
-        /* Main Dashboard */
-        #app-screen {
-            display: none;
-            width: 100%;
-        }
-
-        .header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-
-        .search-box input {
-            flex: 1;
-        }
-
-        .search-box button {
-            width: 120px;
-        }
-
-        /* Sync section */
-        .sync-box {
-            background-color: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 24px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .sync-box input {
-            flex: 1;
-            background: white;
-        }
-
-        /* Results */
-        .results-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        .result-item {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 18px;
-            margin-bottom: 12px;
-            transition: transform 0.15s, box-shadow 0.15s;
-        }
-
-        .result-item:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .file-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .file-name:hover {
-            text-decoration: underline;
-        }
-
-        .score-badge {
-            background: #dbeafe;
-            color: #1e40af;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .preview-text {
-            font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            background: #f1f5f9;
-            padding: 10px;
-            border-radius: 6px;
-        }
-
-        /* Helper Classes */
-        .hidden { display: none !important; }
-        .error-msg {
-            color: #dc2626;
-            font-size: 13px;
-            margin-top: 10px;
-            text-align: center;
-        }
-        .success-msg {
-            color: #16a34a;
-            font-size: 13px;
-            margin-top: 10px;
-            text-align: center;
-        }
         .loader {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--primary);
             border-radius: 50%;
+            border-top: 3px solid #3b82f6;
             width: 20px;
             height: 20px;
             animation: spin 1s linear infinite;
             display: inline-block;
-            vertical-align: middle;
-            margin-right: 8px;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
 
-    <div class="container">
-        
-        <!-- LOGIN SCREEN -->
-        <div id="auth-screen" class="card">
-            <h1 class="auth-title">Tizimga Kirish</h1>
-            <p class="auth-subtitle">Buxgalteriya AI qidiruv platformasi</p>
-            
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="username">Login (Foydalanuvchi nomi)</label>
-                    <input type="text" id="username" placeholder="admin" required>
+    <!-- LOGIN SAHIFASI -->
+    <div id="auth-container" class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-200">
+            <div class="text-center mb-6">
+                <div class="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-calculator text-2xl"></i>
                 </div>
-                <div class="form-group">
-                    <label for="password">Parol</label>
-                    <input type="password" id="password" placeholder="••••••••" required>
+                <h1 class="text-2xl font-bold text-slate-900">Buxgalteriya Tizimi</h1>
+                <p class="text-sm text-slate-500 mt-1">Davom etish uchun hisobingizga kiring</p>
+            </div>
+
+            <!-- Xatolik xabari -->
+            <div id="auth-error" class="hidden bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4 border border-red-200 text-center"></div>
+
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Foydalanuvchi nomi (Login)</label>
+                    <input type="text" id="username" required autocomplete="username"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                        placeholder="Masalan: admin">
                 </div>
-                <button type="submit" id="login-btn">Kirish</button>
-                <div id="auth-error" class="error-msg hidden"></div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Parol</label>
+                    <input type="password" id="password" required autocomplete="current-password"
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                        placeholder="••••••••">
+                </div>
+
+                <button type="submit" id="login-btn"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
+                    Kirish
+                </button>
             </form>
         </div>
+    </div>
 
-        <!-- MAIN DASHBOARD -->
-        <div id="app-screen" class="container">
-            <div class="card">
-                <div class="header-bar">
-                    <div>
-                        <h2>Buxgalteriya Hujjatlari Qidiruvi</h2>
-                        <span style="font-size: 12px; color: var(--text-muted);">Bulutli va AI bazasidagi semantik izlash</span>
+    <!-- ASOSIY DUSHBORD (Login qilgandan so'ng ko'rinadi) -->
+    <div id="app-container" class="hidden min-h-screen flex flex-col">
+        <!-- Yuqori menyu (Header) -->
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 text-white p-2 rounded-lg">
+                        <i class="fa-solid fa-chart-line text-lg"></i>
                     </div>
-                    <div class="user-info">
-                        <span id="user-display" style="font-weight: 600; font-size: 14px;"></span>
-                        <button class="btn-logout" onclick="logout()">Chiqish</button>
-                    </div>
+                    <span class="font-bold text-lg text-slate-900">Buxgalteriya Dashboard</span>
                 </div>
-
-                <!-- Sync Box -->
-                <div class="sync-box">
-                    <input type="text" id="folder-id" placeholder="Dropbox papka yo'li (Masalan: /Buxgalteriya/2026)">
-                    <button class="btn-sync" onclick="syncDropbox()">Indekslash</button>
-                </div>
-                <div id="sync-status" class="success-msg hidden" style="margin-bottom: 15px;"></div>
-
-                <!-- Search Form -->
-                <div class="search-box">
-                    <input type="text" id="search-query" placeholder="Hujjat mazmuni, rekvizit, INN yoki kalit so'zni kiriting..." onkeypress="handleKeyPress(event)">
-                    <button onclick="performSearch()" id="search-btn">Qidirish</button>
-                </div>
-
-                <!-- Search Results -->
-                <div id="results-container">
-                    <div id="results-list"></div>
+                <div class="flex items-center gap-4">
+                    <span id="user-display" class="text-sm font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full border"></span>
+                    <button id="logout-btn" class="text-sm bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 transition">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Chiqish
+                    </button>
                 </div>
             </div>
-        </div>
+        </header>
 
+        <!-- Asosiy kontent -->
+        <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- AI Chat Assistent (Chap taraf) -->
+            <div class="md:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-[600px]">
+                <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 rounded-t-xl">
+                    <h2 class="font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-robot text-blue-600"></i> AI Buxgalter Assistent
+                    </h2>
+                    <span class="text-xs bg-emerald-100 text-emerald-700 font-medium px-2 py-0.5 rounded-full">Faol</span>
+                </div>
+
+                <!-- Chat xabarlar oynasi -->
+                <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3">
+                    <div class="bg-blue-50 text-blue-900 p-3 rounded-lg text-sm max-w-[85%] border border-blue-100">
+                        Assalomu alaykum! Men sizning sun'iy intellekt buxgalteringizman. Qanday yordam bera olaman?
+                    </div>
+                </div>
+
+                <!-- Chat kirish maydoni -->
+                <div class="p-4 border-t border-slate-200">
+                    <form id="chat-form" class="flex gap-2">
+                        <input type="text" id="chat-input" placeholder="Savolingizni yozing..." required
+                            class="flex-1 border border-slate-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        <button type="submit" id="chat-send-btn"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1">
+                            <i class="fa-solid fa-paper-plane"></i> Yuborish
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Asosiy harakatlar va Ma'lumotlar paneli (O'ng taraf) -->
+            <div class="space-y-6">
+                <!-- Tezkor ma'lumot paneli -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                    <h3 class="font-bold text-slate-800 border-b pb-2">Tizim holati</h3>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-500">Baza ulanishi:</span>
+                        <span class="font-semibold text-emerald-600 flex items-center gap-1"><i class="fa-solid fa-circle text-[8px]"></i> Ulangan</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-500">AI Modeli:</span>
+                        <span class="font-semibold text-slate-700">Gemini 1.5 Flash</span>
+                    </div>
+                </div>
+
+                <!-- Sync tugmasi -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 text-center">
+                    <h3 class="font-bold text-slate-800 mb-2">Dropbox Sinxronizatsiyasi</h3>
+                    <p class="text-xs text-slate-500 mb-4">Hujjatlar va fayllarni yangilash uchun tugmani bosing.</p>
+                    <button id="sync-btn" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrows-rotate"></i> Sinxronizatsiya
+                    </button>
+                    <div id="sync-status" class="mt-2 text-xs"></div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
-        // BACKEND URL: index.html endi FastAPI'ning o'zidan xizmat qiladi,
-        // shuning uchun bo'sh qoldiramiz — barcha so'rovlar shu domenning o'ziga ketadi.
-        const BACKEND_URL = "";
+        // DOM Elementlar
+        const authContainer = document.getElementById("auth-container");
+        const appContainer = document.getElementById("app-container");
+        const loginForm = document.getElementById("login-form");
+        const authError = document.getElementById("auth-error");
+        const loginBtn = document.getElementById("login-btn");
+        const userDisplay = document.getElementById("user-display");
+        const logoutBtn = document.getElementById("logout-btn");
+        const chatForm = document.getElementById("chat-form");
+        const chatInput = document.getElementById("chat-input");
+        const chatMessages = document.getElementById("chat-messages");
+        const syncBtn = document.getElementById("sync-btn");
+        const syncStatus = document.getElementById("sync-status");
 
-        // Login Submit
-        document.getElementById("login-form").addEventListener("submit", async function(e) {
-            e.preventDefault();
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const errorDiv = document.getElementById("auth-error");
-            const loginBtn = document.getElementById("login-btn");
-
-            errorDiv.classList.add("hidden");
-            loginBtn.innerHTML = '<span class="loader"></span> Kirilmoqda...';
-
-            try {
-                const response = await fetch(`${BACKEND_URL}/token`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams({ username, password })
-                });
-
-                if (!response.ok) {
-                    throw new Error("Login yoki parol noto'g'ri!");
-                }
-
-                const data = await response.json();
-                localStorage.setItem("access_token", data.access_token);
-                localStorage.setItem("username", username);
-                
-                showApp();
-            } catch (err) {
-                errorDiv.innerText = err.message;
-                errorDiv.classList.remove("hidden");
-            } finally {
-                loginBtn.innerText = "Kirish";
+        // Ishga tushganda tokenni tekshirish
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("access_token");
+            const username = localStorage.getItem("username");
+            
+            if (token && username) {
+                showApp(username);
             }
         });
 
-        // App Screen'ni ko'rsatish
-        function showApp() {
-            const token = localStorage.getItem("access_token");
-            if (!token) return;
+        // Login so'rovi
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
 
-            document.getElementById("auth-screen").style.display = "none";
-            document.getElementById("app-screen").style.display = "block";
-            document.getElementById("user-display").innerText = "👤 " + localStorage.getItem("username");
-        }
+            authError.classList.add("hidden");
+            loginBtn.innerHTML = '<span class="loader"></span> Kiringiz...';
+            loginBtn.disabled = true;
 
-        // Chiqish (Logout)
-        function logout() {
-            localStorage.clear();
-            document.getElementById("app-screen").style.display = "none";
-            document.getElementById("auth-screen").style.display = "block";
-            document.getElementById("login-form").reset();
-        }
-
-        // Search funksiyasi
-        async function performSearch() {
-            const query = document.getElementById("search-query").value.trim();
-            const btn = document.getElementById("search-btn");
-            const resultsList = document.getElementById("results-list");
-            const token = localStorage.getItem("access_token");
-
-            if (!query) return;
-
-            btn.innerHTML = '<span class="loader"></span>';
-            resultsList.innerHTML = "";
+            // FastAPI Form ma'lumotlarini tayyorlash
+            const formData = new URLSearchParams();
+            formData.append("username", username);
+            formData.append("password", password);
 
             try {
-                const response = await fetch(`${BACKEND_URL}/search?query=${encodeURIComponent(query)}`, {
-                    headers: { "Authorization": `Bearer ${token}` }
+                const response = await fetch("/token", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: formData.toString()
                 });
-
-                if (response.status === 401) {
-                    alert("Sessiya muddati tugadi. Qayta kiring.");
-                    logout();
-                    return;
-                }
 
                 const data = await response.json();
 
-                if (!data.results || data.results.length === 0) {
-                    resultsList.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Ushbu so'rov bo'yicha mos keluvchi fayllar topilmadi.</p>';
-                    return;
+                if (!response.ok) {
+                    throw new Error(data.detail || "Login yoki parol noto'g'ri!");
                 }
 
-                let html = `<h3 class="results-title">Qidiruv natijalari (${data.results.length} ta fayl topildi):</h3>`;
-                data.results.forEach(item => {
-                    html += `
-                        <div class="result-item">
-                            <div class="result-header">
-                                <a href="${item.file_link}" target="_blank" class="file-name">📄 ${item.file_name}</a>
-                                <span class="score-badge">O'xshashlik: ${item.similarity_score}%</span>
-                            </div>
-                            <div class="preview-text">${item.preview || 'Matnli ko'rinish mavjud emas.'}</div>
-                        </div>
-                    `;
-                });
-                resultsList.innerHTML = html;
+                // Tokenni saqlash
+                localStorage.setItem("access_token", data.access_token);
+                localStorage.setItem("username", username);
 
+                showApp(username);
             } catch (err) {
-                resultsList.innerHTML = `<p class="error-msg">Qidiruvda xatolik yuz berdi: ${err.message}</p>`;
+                authError.innerText = err.message;
+                authError.classList.remove("hidden");
             } finally {
-                btn.innerText = "Qidirish";
+                loginBtn.innerHTML = "Kirish";
+                loginBtn.disabled = false;
             }
+        });
+
+        // App rejimiga o'tish
+        function showApp(username) {
+            authContainer.classList.add("hidden");
+            appContainer.classList.remove("hidden");
+            userDisplay.innerText = username;
         }
 
-        function handleKeyPress(e) {
-            if (e.key === "Enter") performSearch();
-        }
+        // Chiqish (Logout)
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("username");
+            appContainer.classList.add("hidden");
+            authContainer.classList.remove("hidden");
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+        });
 
-        // Dropbox Indekslash
-        async function syncDropbox() {
-            const folderPath = document.getElementById("folder-id").value.trim();
-            const statusDiv = document.getElementById("sync-status");
+        // AI Chat bilan muloqot
+        chatForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Xabarni ekranga chiqarish
+            appendMessage(message, "user");
+            chatInput.value = "";
+
             const token = localStorage.getItem("access_token");
 
-            if (!folderPath) {
-                alert("Iltimos, Dropbox papka yo'lini kiriting (masalan: /Buxgalteriya)!");
-                return;
-            }
-
-            statusDiv.classList.remove("hidden");
-            statusDiv.innerText = "⏳ Indekslash orqa fonda boshlandi...";
-
             try {
-                const response = await fetch(`${BACKEND_URL}/sync?folder_path=${encodeURIComponent(folderPath)}`, {
+                const response = await fetch(`/query?prompt=${encodeURIComponent(message)}`, {
                     method: "POST",
-                    headers: { "Authorization": `Bearer ${token}` }
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
                 });
 
-                if (response.ok) {
-                    statusDiv.innerText = "✅ Dropbox fayllarini indekslash orqa fonda muvaffaqiyatli boshlandi!";
-                } else {
-                    statusDiv.innerText = "❌ Indekslashni boshlashda xatolik yuz berdi.";
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        alert("Sessiya muddati tugadi. Qayta kiring.");
+                        logoutBtn.click();
+                        return;
+                    }
+                    throw new Error(data.detail || "Javob olishda xatolik yuz berdi.");
                 }
+
+                appendMessage(data.response || data.message || JSON.stringify(data), "bot");
             } catch (err) {
-                statusDiv.innerText = "❌ Xatolik: " + err.message;
+                appendMessage("Xatolik: " + err.message, "bot", true);
             }
+        });
+
+        // Xabarni chatga qo'shish funksiyasi
+        function appendMessage(text, sender, isError = false) {
+            const msgDiv = document.createElement("div");
+            msgDiv.className = `p-3 rounded-lg text-sm max-w-[85%] ${
+                sender === "user"
+                    ? "bg-blue-600 text-white ml-auto"
+                    : isError
+                    ? "bg-red-50 text-red-600 border border-red-200"
+                    : "bg-slate-100 text-slate-800 border border-slate-200"
+            }`;
+            msgDiv.innerText = text;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // Sahifa yuklanganda sessiyani tekshirish
-        window.onload = function() {
-            if (localStorage.getItem("access_token")) {
-                showApp();
+        // Sinxronizatsiya tugmasi
+        syncBtn.addEventListener("click", async () => {
+            const token = localStorage.getItem("access_token");
+            syncStatus.innerText = "Sinxronizatsiya bajarilmoqda...";
+            syncStatus.className = "mt-2 text-xs text-blue-600";
+
+            try {
+                const response = await fetch("/sync", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || "Sinxronizatsiya xatosi.");
+
+                syncStatus.innerText = "Muvaffaqiyatli yangilandi!";
+                syncStatus.className = "mt-2 text-xs text-emerald-600 font-semibold";
+            } catch (err) {
+                syncStatus.innerText = err.message;
+                syncStatus.className = "mt-2 text-xs text-red-600 font-semibold";
             }
-        };
+        });
     </script>
 </body>
 </html>
