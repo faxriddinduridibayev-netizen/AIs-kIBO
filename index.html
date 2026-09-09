@@ -6,7 +6,7 @@
     <title>Buxgalteriya Tizimi va AI Assistent</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Font for Icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .loader {
@@ -63,7 +63,7 @@
         </div>
     </div>
 
-    <!-- ASOSIY DUSHBORD (Login qilgandan so'ng ko'rinadi) -->
+    <!-- ASOSIY DASHBOARD -->
     <div id="app-container" class="hidden min-h-screen flex flex-col">
         <!-- Yuqori menyu (Header) -->
         <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
@@ -72,7 +72,7 @@
                     <div class="bg-blue-600 text-white p-2 rounded-lg">
                         <i class="fa-solid fa-chart-line text-lg"></i>
                     </div>
-                    <span class="font-bold text-lg text-slate-900">Buxgalteriya Dashboard</span>
+                    <span class="font-bold text-lg text-slate-900">Buxgalteriya Semantik Qidiruv</span>
                 </div>
                 <div class="flex items-center gap-4">
                     <span id="user-display" class="text-sm font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full border"></span>
@@ -85,92 +85,57 @@
 
         <!-- Asosiy kontent -->
         <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- AI Chat Assistent (Chap taraf) -->
-            <div class="md:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-[600px]">
-                <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 rounded-t-xl">
-                    <h2 class="font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-robot text-blue-600"></i> AI Buxgalter Assistent
-                    </h2>
-                    <span class="text-xs bg-emerald-100 text-emerald-700 font-medium px-2 py-0.5 rounded-full">Faol</span>
-                </div>
+            <!-- Qidiruv paneli (Chap taraf) -->
+            <div class="md:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col p-6">
+                <h2 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass text-blue-600"></i> Hujjatlar bo'yicha AI Qidiruv
+                </h2>
 
-                <!-- Chat xabarlar oynasi -->
-                <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3">
-                    <div class="bg-blue-50 text-blue-900 p-3 rounded-lg text-sm max-w-[85%] border border-blue-100">
-                        Assalomu alaykum! Men sizning sun'iy intellekt buxgalteringizman. Qanday yordam bera olaman?
-                    </div>
-                </div>
+                <form id="search-form" class="flex gap-2 mb-6">
+                    <input type="text" id="search-input" placeholder="Hujjat mazmuni, INN, hisobot turi yoki kalit so'zni kiriting..." required
+                        class="flex-1 border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    <button type="submit" id="search-btn"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition flex items-center gap-2">
+                        <i class="fa-solid fa-search"></i> Qidirish
+                    </button>
+                </form>
 
-                <!-- Chat kirish maydoni -->
-                <div class="p-4 border-t border-slate-200">
-                    <form id="chat-form" class="flex gap-2">
-                        <input type="text" id="chat-input" placeholder="Savolingizni yozing..." required
-                            class="flex-1 border border-slate-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-                        <button type="submit" id="chat-send-btn"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1">
-                            <i class="fa-solid fa-paper-plane"></i> Yuborish
-                        </button>
-                    </form>
+                <!-- Qidiruv natijalari -->
+                <div id="results-container" class="flex-1 overflow-y-auto space-y-4">
+                    <p class="text-slate-400 text-center text-sm my-10">Qidiruv natijalari bu yerda chiqadi.</p>
                 </div>
             </div>
 
-            <!-- Asosiy harakatlar va Ma'lumotlar paneli (O'ng taraf) -->
+            <!-- On-side panellar (O'ng taraf) -->
             <div class="space-y-6">
-                <!-- Tezkor ma'lumot paneli -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                <!-- Sync tugmasi va ma'lumot -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                        <i class="fa-brands fa-dropbox text-blue-500"></i> Dropbox Sinxronizatsiyasi
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-4">Dropbox'dagi buxgalteriya fayllarini o'qib, ularni pgvector bazasiga yuklash.</p>
+                    <button id="sync-btn" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 shadow">
+                        <i class="fa-solid fa-arrows-rotate"></i> Indekslashni boshlash
+                    </button>
+                    <div id="sync-status" class="mt-3 text-xs"></div>
+                </div>
+
+                <!-- Tizim holati -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3 text-sm">
                     <h3 class="font-bold text-slate-800 border-b pb-2">Tizim holati</h3>
-                    <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-500">Baza ulanishi:</span>
-                        <span class="font-semibold text-emerald-600 flex items-center gap-1"><i class="fa-solid fa-circle text-[8px]"></i> Ulangan</span>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-500">PostgreSQL + Vector:</span>
+                        <span class="font-semibold text-emerald-600"><i class="fa-solid fa-circle text-[8px]"></i> Faol</span>
                     </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-500">AI Modeli:</span>
-                        <span class="font-semibold text-slate-700">Gemini 1.5 Flash</span>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-500">Embedding AI:</span>
+                        <span class="font-semibold text-slate-700">text-embedding-004</span>
                     </div>
                 </div>
-/// Sinxronizatsiya tugmasi
-syncBtn.addEventListener("click", async () => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-        alert("Sessiya topilmadi. Qayta kiring.");
-        logoutBtn.click();
-        return;
-    }
+            </div>
+        </main>
+    </div>
 
-    // Dropbox papka yo'li (agar bo'sh bo'lsa ildiz papka "/")
-    const folderPath = prompt("Dropbox papka yo'lini kiriting:", "/") || "/";
-
-    syncStatus.innerText = "Sinxronizatsiya orqa fonda boshlanmoqda...";
-    syncStatus.className = "mt-2 text-xs text-blue-600 font-semibold";
-
-    try {
-        const response = await fetch(`/sync?folder_path=${encodeURIComponent(folderPath)}`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            }
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            if (response.status === 401) {
-                alert("Token muddati tugagan. Iltimos, tizimdan chiqib qayta kiring!");
-                logoutBtn.click();
-                return;
-            }
-            throw new Error(data.detail || "Sinxronizatsiya xatosi.");
-        }
-
-        syncStatus.innerText = "✅ " + (data.message || "Sinxronizatsiya boshlandi!");
-        syncStatus.className = "mt-2 text-xs text-emerald-600 font-semibold";
-    } catch (err) {
-        syncStatus.innerText = "❌ " + err.message;
-        syncStatus.className = "mt-2 text-xs text-red-600 font-semibold";
-    }
-});
-                
     <script>
         // DOM Elementlar
         const authContainer = document.getElementById("auth-container");
@@ -180,9 +145,12 @@ syncBtn.addEventListener("click", async () => {
         const loginBtn = document.getElementById("login-btn");
         const userDisplay = document.getElementById("user-display");
         const logoutBtn = document.getElementById("logout-btn");
-        const chatForm = document.getElementById("chat-form");
-        const chatInput = document.getElementById("chat-input");
-        const chatMessages = document.getElementById("chat-messages");
+        
+        const searchForm = document.getElementById("search-form");
+        const searchInput = document.getElementById("search-input");
+        const searchBtn = document.getElementById("search-btn");
+        const resultsContainer = document.getElementById("results-container");
+        
         const syncBtn = document.getElementById("sync-btn");
         const syncStatus = document.getElementById("sync-status");
 
@@ -196,17 +164,16 @@ syncBtn.addEventListener("click", async () => {
             }
         });
 
-        // Login so'rovi
+        // Login So'rovi
         loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
 
             authError.classList.add("hidden");
-            loginBtn.innerHTML = '<span class="loader"></span> Kiringiz...';
+            loginBtn.innerHTML = '<span class="loader"></span> Kirilmoqda...';
             loginBtn.disabled = true;
 
-            // FastAPI Form ma'lumotlarini tayyorlash
             const formData = new URLSearchParams();
             formData.append("username", username);
             formData.append("password", password);
@@ -214,9 +181,7 @@ syncBtn.addEventListener("click", async () => {
             try {
                 const response = await fetch("/token", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: formData.toString()
                 });
 
@@ -226,7 +191,6 @@ syncBtn.addEventListener("click", async () => {
                     throw new Error(data.detail || "Login yoki parol noto'g'ri!");
                 }
 
-                // Tokenni saqlash
                 localStorage.setItem("access_token", data.access_token);
                 localStorage.setItem("username", username);
 
@@ -235,42 +199,99 @@ syncBtn.addEventListener("click", async () => {
                 authError.innerText = err.message;
                 authError.classList.remove("hidden");
             } finally {
-                loginBtn.innerHTML = "Kirish";
+                loginBtn.innerText = "Kirish";
                 loginBtn.disabled = false;
             }
         });
 
-        // App rejimiga o'tish
         function showApp(username) {
             authContainer.classList.add("hidden");
             appContainer.classList.remove("hidden");
-            userDisplay.innerText = username;
+            userDisplay.innerText = "👤 " + username;
         }
 
-        // Chiqish (Logout)
+        // Logout
         logoutBtn.addEventListener("click", () => {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("username");
+            localStorage.clear();
             appContainer.classList.add("hidden");
             authContainer.classList.remove("hidden");
             document.getElementById("username").value = "";
             document.getElementById("password").value = "";
         });
 
-        // AI Chat bilan muloqot
-        chatForm.addEventListener("submit", async (e) => {
+        // Hujjatlar Qidiruvi (/search)
+        searchForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            const message = chatInput.value.trim();
-            if (!message) return;
-
-            // Xabarni ekranga chiqarish
-            appendMessage(message, "user");
-            chatInput.value = "";
+            const query = searchInput.value.trim();
+            if (!query) return;
 
             const token = localStorage.getItem("access_token");
+            searchBtn.innerHTML = '<span class="loader"></span>';
+            searchBtn.disabled = true;
+            resultsContainer.innerHTML = '<p class="text-blue-600 text-center py-6">Qidirilmoqda...</p>';
 
             try {
-                const response = await fetch(`/query?prompt=${encodeURIComponent(message)}`, {
+                const response = await fetch(`/search?query=${encodeURIComponent(query)}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        alert("Token muddati o'tgan. Iltimos qayta kiring.");
+                        logoutBtn.click();
+                        return;
+                    }
+                    throw new Error(data.detail || "Qidiruvda xatolik.");
+                }
+
+                if (!data.results || data.results.length === 0) {
+                    resultsContainer.innerHTML = '<p class="text-slate-500 text-center py-6">Mos keluvchi hujjatlar topilmadi.</p>';
+                    return;
+                }
+
+                let html = '';
+                data.results.forEach(item => {
+                    html += `
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 hover:border-blue-300 transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <a href="${item.file_link}" target="_blank" class="font-bold text-blue-600 hover:underline flex items-center gap-1">
+                                    📄 ${item.file_name}
+                                </a>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                    ${item.similarity_score}% moslik
+                                </span>
+                            </div>
+                            <p class="text-xs text-slate-600 bg-white p-2.5 rounded border border-slate-100 font-mono">${item.preview || 'Matn mavjud emas'}</p>
+                        </div>
+                    `;
+                });
+                resultsContainer.innerHTML = html;
+
+            } catch (err) {
+                resultsContainer.innerHTML = `<p class="text-red-500 text-center py-6">Xatolik: ${err.message}</p>`;
+            } finally {
+                searchBtn.innerHTML = '<i class="fa-solid fa-search"></i> Qidirish';
+                searchBtn.disabled = false;
+            }
+        });
+
+        // Dropbox Sinxronizatsiyasi (/sync?folder_path=...)
+        syncBtn.addEventListener("click", async () => {
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                logoutBtn.click();
+                return;
+            }
+
+            const folderPath = prompt("Dropbox papka yo'lini kiriting (masalan: /Buxgalteriya yoki bo'sh qoldiring):", "") || "";
+
+            syncStatus.innerText = "⏳ Sinxronizatsiya boshlanmoqda...";
+            syncStatus.className = "mt-3 text-xs text-blue-600 font-semibold";
+
+            try {
+                const response = await fetch(`/sync?folder_path=${encodeURIComponent(folderPath)}`, {
                     method: "POST",
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -281,56 +302,18 @@ syncBtn.addEventListener("click", async () => {
 
                 if (!response.ok) {
                     if (response.status === 401) {
-                        alert("Sessiya muddati tugadi. Qayta kiring.");
+                        alert("Sessiya muddati tugagan! Qayta kiring.");
                         logoutBtn.click();
                         return;
                     }
-                    throw new Error(data.detail || "Javob olishda xatolik yuz berdi.");
+                    throw new Error(data.detail || "Sinxronizatsiya xatosi.");
                 }
 
-                appendMessage(data.response || data.message || JSON.stringify(data), "bot");
+                syncStatus.innerText = "✅ " + (data.message || "Indekslash boshlandi!");
+                syncStatus.className = "mt-3 text-xs text-emerald-600 font-semibold";
             } catch (err) {
-                appendMessage("Xatolik: " + err.message, "bot", true);
-            }
-        });
-
-        // Xabarni chatga qo'shish funksiyasi
-        function appendMessage(text, sender, isError = false) {
-            const msgDiv = document.createElement("div");
-            msgDiv.className = `p-3 rounded-lg text-sm max-w-[85%] ${
-                sender === "user"
-                    ? "bg-blue-600 text-white ml-auto"
-                    : isError
-                    ? "bg-red-50 text-red-600 border border-red-200"
-                    : "bg-slate-100 text-slate-800 border border-slate-200"
-            }`;
-            msgDiv.innerText = text;
-            chatMessages.appendChild(msgDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Sinxronizatsiya tugmasi
-        syncBtn.addEventListener("click", async () => {
-            const token = localStorage.getItem("access_token");
-            syncStatus.innerText = "Sinxronizatsiya bajarilmoqda...";
-            syncStatus.className = "mt-2 text-xs text-blue-600";
-
-            try {
-                const response = await fetch("/sync", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
-
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.detail || "Sinxronizatsiya xatosi.");
-
-                syncStatus.innerText = "Muvaffaqiyatli yangilandi!";
-                syncStatus.className = "mt-2 text-xs text-emerald-600 font-semibold";
-            } catch (err) {
-                syncStatus.innerText = err.message;
-                syncStatus.className = "mt-2 text-xs text-red-600 font-semibold";
+                syncStatus.innerText = "❌ " + err.message;
+                syncStatus.className = "mt-3 text-xs text-red-600 font-semibold";
             }
         });
     </script>
