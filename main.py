@@ -12,6 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sentence_transformers import SentenceTransformer
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
+from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 app = FastAPI(title="Dropbox Buxgalteriya Qidiruv Tizimi")
 
@@ -36,7 +38,9 @@ USERS_DB = {
     "admin": "admin123",
     "buxgalter1": "pas2026"
 }
-
+@app.get("/")
+def root():
+    return RedirectResponse(url="/docs")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def init_db():
