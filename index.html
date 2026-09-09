@@ -129,18 +129,48 @@
                     </div>
                 </div>
 
-                <!-- Sync tugmasi -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 text-center">
-                    <h3 class="font-bold text-slate-800 mb-2">Dropbox Sinxronizatsiyasi</h3>
-                    <p class="text-xs text-slate-500 mb-4">Hujjatlar va fayllarni yangilash uchun tugmani bosing.</p>
-                    <button id="sync-btn" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-arrows-rotate"></i> Sinxronizatsiya
-                    </button>
-                    <div id="sync-status" class="mt-2 text-xs"></div>
-                </div>
-            </div>
-        </main>
-    </div>
+              // Sinxronizatsiya tugmasi
+syncBtn.addEventListener("click", async () => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        alert("Sessiya topilmadi. Qayta kiring.");
+        logoutBtn.click();
+        return;
+    }
+
+    // Dropbox papka yo'li (agar bo'sh bo'lsa ildiz papka "/")
+    const folderPath = prompt("Dropbox papka yo'lini kiriting:", "/") || "/";
+
+    syncStatus.innerText = "Sinxronizatsiya orqa fonda boshlanmoqda...";
+    syncStatus.className = "mt-2 text-xs text-blue-600 font-semibold";
+
+    try {
+        const response = await fetch(`/sync?folder_path=${encodeURIComponent(folderPath)}`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                alert("Token muddati tugagan. Iltimos, tizimdan chiqib qayta kiring!");
+                logoutBtn.click();
+                return;
+            }
+            throw new Error(data.detail || "Sinxronizatsiya xatosi.");
+        }
+
+        syncStatus.innerText = "✅ " + (data.message || "Sinxronizatsiya boshlandi!");
+        syncStatus.className = "mt-2 text-xs text-emerald-600 font-semibold";
+    } catch (err) {
+        syncStatus.innerText = "❌ " + err.message;
+        syncStatus.className = "mt-2 text-xs text-red-600 font-semibold";
+    }
+});
 
     <script>
         // DOM Elementlar
